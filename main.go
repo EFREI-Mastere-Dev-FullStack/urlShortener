@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
 	"urlShortener/database"
 )
 
@@ -18,5 +19,10 @@ func main() {
 		panic("Impossible de se connecter à la base de données MongoDB: " + err.Error())
 	}
 
-	fmt.Println("Connecté à MongoDB")
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "Hello, World!")
+	})
+
+	router.Run(":8080")
 }

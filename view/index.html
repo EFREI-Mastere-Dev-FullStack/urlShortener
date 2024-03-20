@@ -2,9 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Shorten URL</title>
 </head>
 <body>
-<h1>Test MVC</h1>
+<form action="/shorten" method="POST">
+    <label for="original">Original URL:</label>
+    <input type="text" id="original" name="Original" required><br>
+
+    <label for="alias">Alias:</label>
+    <input type="text" id="alias" name="Alias"><br>
+
+    <label for="expireCheckbox">Expirable?</label>
+    <input type="checkbox" id="expireCheckbox"><br>
+
+    <div id="expirationDate" style="display: none;">
+        <label for="expireDate">Expiration date:</label>
+        <input type="date" id="expireDate" name="ExpiredAt">
+    </div>
+
+    <br>
+
+    <button type="submit">Short it</button>
+</form>
+<script>
+    document.getElementById('expireCheckbox').addEventListener('change', function () {
+        document.getElementById('expirationDate').style.display = this.checked ? 'block' : 'none';
+    });
+</script>
+
 </body>
 </html>

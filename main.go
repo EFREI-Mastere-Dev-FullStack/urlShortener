@@ -18,6 +18,8 @@ func main() {
 		panic("Impossible de se connecter à la base de données MongoDB: " + err.Error())
 	}
 
+	database.Connection = dbConnection
+
 	r := router.SetupRouter()
 
 	r.LoadHTMLGlob("view/*")

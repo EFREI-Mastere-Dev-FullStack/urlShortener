@@ -21,6 +21,7 @@ func ShortenURL(c *gin.Context) {
 	}
 
 	// TODO: Generer un slug [faudrait faire attention a ce que le slug soit unique en BDD]
+	// TODO: Interdire les dates d'expiration dans le passé [url.ExpirationDate]
 
 	db := database.Connection
 	_, err := db.Database.Collection("urls").InsertOne(context.Background(), url)

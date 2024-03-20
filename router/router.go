@@ -7,6 +7,7 @@ import (
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
+	router.LoadHTMLGlob("view/*")
 
 	// Liste des routes :
 	// Definir les methods dans controller/controller.go

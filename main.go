@@ -21,5 +21,8 @@ func main() {
 	r := router.SetupRouter()
 
 	r.LoadHTMLGlob("view/*")
-	r.Run(":8080")
+	err = r.Run(":8080")
+	if err != nil {
+		panic("Impossible démarrer le serveur: " + err.Error())
+	}
 }

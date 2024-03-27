@@ -4,9 +4,12 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"urlShortener/database"
 	"urlShortener/model"
 )
+
+var BaseURL = os.Getenv("BASE_URL")
 
 func IndexPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
@@ -31,5 +34,5 @@ func ShortenURL(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "URL shorted"})
+	c.HTML(http.StatusOK, "shorten.html", gin.H{"BaseURL": BaseURL, "url": url})
 }

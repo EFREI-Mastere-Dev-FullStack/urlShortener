@@ -13,6 +13,7 @@ func SetupRouter() *gin.Engine {
 	// Definir les methods dans controller/controller.go
 	router.GET("/", controller.IndexPage)
 	router.POST("/shorten", controller.ShortenURL)
+	router.GET("/:slug", controller.RedirectURL)
 
 	return router
 }

@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"math/rand"
 	"net/http"
 	"os"
@@ -26,10 +27,10 @@ func ShortenURL(c *gin.Context) {
 		return
 	}
 
+	// TODO: Interdire les dates d'expiration dans le passé [url.ExpirationDate]
+	// TODO: Interdire le doublon d'alias
 	// TODO: Amelioration: Verifier l'unicité du slug en base de données
 	url.ShortenedSlug = generateSlug(6)
-
-	// TODO: Interdire les dates d'expiration dans le passé [url.ExpirationDate]
 
 	db := database.Connection
 	_, err := db.Database.Collection("urls").InsertOne(context.Background(), url)
@@ -40,6 +41,25 @@ func ShortenURL(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "shorten.html", gin.H{"BaseURL": BaseURL, "url": url})
+}
+
+func RedirectURL(c *gin.Context) {
+	slug := c.Param("slug")
+
+	var url model.URL
+	db := database.Connection
+
+	filter := bson.M{"$or": []bson.M{{"shortened_slug": slug}, {"alias": slug}}}
+	err := db.Database.Collection("urls").FindOne(context.Background(), filter).Decode(&url)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "URL not found"})
+		return
+	}
+
+	// TODO: Mettre en place le compteur de clics
+	c.Redirect(http.StatusMovedPermanently, url.Original)
+
 }
 
 // private function

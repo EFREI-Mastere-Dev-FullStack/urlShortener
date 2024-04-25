@@ -2,11 +2,13 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"math/rand"
 	"net/http"
 	"os"
+	"time"
 	"urlShortener/database"
 	"urlShortener/model"
 )
@@ -27,14 +29,9 @@ func ShortenURL(c *gin.Context) {
 		return
 	}
 
-	// TODO: Interdire les dates d'expiration dans le passé [url.ExpirationDate]
-	// TODO: Interdire le doublon d'alias
-	// TODO: Amelioration: Verifier l'unicité du slug en base de données
-	url.ShortenedSlug = generateSlug(6)
-
 	db := database.Connection
-	_, err := db.Database.Collection("urls").InsertOne(context.Background(), url)
 
+	err := createURL(db, &url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -63,10 +60,45 @@ func RedirectURL(c *gin.Context) {
 }
 
 // private function
-func generateSlug(n int) string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = charBytes[rand.Intn(len(charBytes))]
+func createURL(db *database.MongoDBConnection, url *model.URL) error {
+	if url.Alias != "" {
+		filter := bson.M{"$or": []bson.M{{"shortened_slug": url.Alias}, {"alias": url.Alias}}}
+		err := db.Database.Collection("urls").FindOne(context.Background(), filter).Err()
+		if err == nil {
+			return fmt.Errorf("alias already in use")
+		}
 	}
-	return string(b)
+
+	url.ShortenedSlug = generateSlug(db, 6)
+	url.CreatedAt = time.Now().Local()
+
+	if !url.ExpiredAt.IsZero() && url.ExpiredAt.Before(url.CreatedAt) {
+		return fmt.Errorf("expiration date can't be in the past")
+	}
+
+	_, err := db.Database.Collection("urls").InsertOne(context.Background(), url)
+	if err != nil {
+		return fmt.Errorf("error inserting url into database: %v", err)
+	}
+
+	return nil
+}
+
+func generateSlug(db *database.MongoDBConnection, n int) string {
+	var slug string
+	for {
+		b := make([]byte, n)
+		for i := range b {
+			b[i] = charBytes[rand.Intn(len(charBytes))]
+		}
+		slug = string(b)
+
+		filter := bson.M{"shortened_slug": slug}
+		err := db.Database.Collection("urls").FindOne(context.Background(), filter).Err()
+		if err != nil {
+			break
+		}
+	}
+
+	return slug
 }

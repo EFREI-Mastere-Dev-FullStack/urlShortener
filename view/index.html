@@ -25,8 +25,19 @@
     <button type="submit">Short it</button>
 </form>
 <script>
+    let savedDate;
     document.getElementById('expireCheckbox').addEventListener('change', function () {
-        document.getElementById('expirationDate').style.display = this.checked ? 'block' : 'none';
+        let expirationBlock = document.getElementById('expirationDate');
+        let expireDateInput = document.getElementById('expireDate');
+
+        if (this.checked) {
+            expirationBlock.style.display = 'block';
+            expireDateInput.value = savedDate;
+        } else {
+            expirationBlock.style.display = 'none';
+            savedDate = expireDateInput.value;
+            expireDateInput.value = null;
+        }
     });
 </script>
 

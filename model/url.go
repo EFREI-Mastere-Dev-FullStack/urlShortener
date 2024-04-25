@@ -12,4 +12,5 @@ type URL struct {
 	Alias         string             `bson:"alias,omitempty"`
 	ExpiredAt     time.Time          `bson:"expired_at,omitempty" time_format:"2006-01-02"`
 	CreatedAt     time.Time          `bson:"created_at"`
+	Count         int                `bson:"count"`
 }

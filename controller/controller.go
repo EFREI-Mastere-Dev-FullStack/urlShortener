@@ -47,16 +47,15 @@ func RedirectURL(c *gin.Context) {
 	db := database.Connection
 
 	filter := bson.M{"$or": []bson.M{{"shortened_slug": slug}, {"alias": slug}}}
-	err := db.Database.Collection("urls").FindOne(context.Background(), filter).Decode(&url)
+	update := bson.M{"$inc": bson.M{"count": 1}}
 
+	err := db.Database.Collection("urls").FindOneAndUpdate(context.Background(), filter, update).Decode(&url)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "URL not found"})
 		return
 	}
 
-	// TODO: Mettre en place le compteur de clics
 	c.Redirect(http.StatusMovedPermanently, url.Original)
-
 }
 
 // private function
@@ -71,6 +70,7 @@ func createURL(db *database.MongoDBConnection, url *model.URL) error {
 
 	url.ShortenedSlug = generateSlug(db, 6)
 	url.CreatedAt = time.Now().Local()
+	url.Count = 0
 
 	if !url.ExpiredAt.IsZero() && url.ExpiredAt.Before(url.CreatedAt) {
 		return fmt.Errorf("expiration date can't be in the past")

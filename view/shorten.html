@@ -6,7 +6,19 @@
 </head>
     <body>
     <h1>Shorten URL</h1>
-    <p>Here is your shortened URL:</p>
-    <a href={{.BaseURL}}/{{.url.ShortenedSlug}}>{{.BaseURL}}/{{.url.ShortenedSlug}}</a>
+
+    <p>Here is your shortened URL:
+        <a href={{.BaseURL}}/{{.url.ShortenedSlug}}>{{.BaseURL}}/{{.url.ShortenedSlug}}</a>
+    </p>
+    {{if ne .url.Alias ""}}
+        <p>You can also use the alias:
+            <a href={{.BaseURL}}/{{.url.Alias}}>{{.BaseURL}}/{{.url.Alias}}</a>
+        </p>
+    {{end}}
+
+    {{if not .url.ExpiredAt.IsZero}}
+        <p>Expiration Date: {{.url.ExpiredAt}}</p>
+    {{end}}
+
 </body>
 </html>

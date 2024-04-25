@@ -55,6 +55,11 @@ func RedirectURL(c *gin.Context) {
 		return
 	}
 
+	if !url.ExpiredAt.IsZero() && url.ExpiredAt.Before(time.Now().Local()) {
+		c.JSON(http.StatusGone, gin.H{"error": "URL expired"})
+		return
+	}
+
 	c.Redirect(http.StatusMovedPermanently, url.Original)
 }
 

@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"time"
+	"urlShortener/auth"
 	"urlShortener/model"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,50 @@ var BaseURL, _ = goenv.GetEnv("BASE_URL")
 
 func IndexPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
+}
+func LoginPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", nil)
+}
+
+func RegisterPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "register.html", nil)
+}
+
+func Register(c *gin.Context) {
+	var body struct {
+		Username string `form:"username" binding:"required"`
+		Password string `form:"password" binding:"required"`
+	}
+	if err := c.ShouldBind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := auth.Register(body.Username, body.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": body.Username + " registered successfully"})
+}
+
+func Login(c *gin.Context) {
+	var body struct {
+		Username string `form:"username" binding:"required"`
+		Password string `form:"password" binding:"required"`
+	}
+	if err := c.ShouldBind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	token, err := auth.Login(body.Username, body.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func ShortenURL(c *gin.Context) {

@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"urlShortener/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
@@ -20,6 +21,9 @@ func SetupRouter() *gin.Engine {
 	router.GET("/", controller.IndexPage)
 	router.POST("/shorten", controller.ShortenURL)
 	router.GET("/:slug", controller.RedirectURL)
-
+	router.GET("/login", controller.LoginPage)
+	router.POST("/login", controller.Login)
+	router.GET("/register", controller.RegisterPage)
+	router.POST("/register", controller.Register)
 	return router
 }

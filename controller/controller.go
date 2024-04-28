@@ -56,7 +56,8 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("token", token, 3600*24, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 

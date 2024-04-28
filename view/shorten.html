@@ -3,22 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Shorten URL</title>
+    <style>
+        /* Style général */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-    <body>
+<body>
     <h1>Shorten URL</h1>
 
     <p>Here is your shortened URL:
-        <a href={{.BaseURL}}/{{.url.ShortenedSlug}}>{{.BaseURL}}/{{.url.ShortenedSlug}}</a>
+        <a href="{{.BaseURL}}/{{.url.ShortenedSlug}}">{{.BaseURL}}/{{.url.ShortenedSlug}}</a>
     </p>
     {{if ne .url.Alias ""}}
         <p>You can also use the alias:
-            <a href={{.BaseURL}}/{{.url.Alias}}>{{.BaseURL}}/{{.url.Alias}}</a>
+            <a href="{{.BaseURL}}/{{.url.Alias}}">{{.BaseURL}}/{{.url.Alias}}</a>
         </p>
     {{end}}
 
     {{if not .url.ExpiredAt.IsZero}}
         <p>Expiration Date: {{.url.ExpiredAt}}</p>
     {{end}}
-
 </body>
 </html>

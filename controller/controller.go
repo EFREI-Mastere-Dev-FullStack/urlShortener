@@ -1,14 +1,15 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"os"
 	"time"
 	"urlShortener/model"
+
+	"github.com/gin-gonic/gin"
+	"github.com/subinoybiswas/goenv"
 )
 
-var BaseURL = os.Getenv("BASE_URL")
+var BaseURL, _ = goenv.GetEnv("BASE_URL")
 
 func IndexPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)

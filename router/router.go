@@ -1,6 +1,7 @@
 package router
 
 import (
+	"urlShortener/auth"
 	"urlShortener/controller"
 
 	"github.com/gin-gonic/gin"
@@ -18,12 +19,13 @@ func SetupRouter() *gin.Engine {
 
 	// Liste des routes :
 	// Definir les methods dans controller/controller.go
-	router.GET("/", controller.IndexPage)
+	router.GET("/home", auth.RequiredAuth, controller.IndexPage)
 	router.POST("/shorten", controller.ShortenURL)
 	router.GET("/:slug", controller.RedirectURL)
-	router.GET("/login", controller.LoginPage)
-	router.POST("/login", controller.Login)
+	router.GET("/", controller.LoginPage)
+	router.POST("/", controller.Login)
 	router.GET("/register", controller.RegisterPage)
 	router.POST("/register", controller.Register)
+	router.GET("/logout", controller.Logout)
 	return router
 }

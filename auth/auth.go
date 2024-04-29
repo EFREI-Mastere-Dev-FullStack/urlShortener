@@ -53,7 +53,7 @@ func Login(username string, password string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
+		"sub": user.Username,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
 	var secret, _ = goenv.GetEnv("SECRET_KEY")

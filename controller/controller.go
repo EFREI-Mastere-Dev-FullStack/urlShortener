@@ -13,7 +13,13 @@ import (
 var BaseURL, _ = goenv.GetEnv("BASE_URL")
 
 func IndexPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
+	user, _ := c.Get("user")
+	username := user.(model.User).Username
+	if user != nil {
+		c.HTML(http.StatusOK, "index.html", gin.H{"username": username})
+	} else {
+		c.HTML(http.StatusOK, "index.html", nil)
+	}
 }
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
@@ -38,8 +44,7 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": body.Username + " registered successfully"})
+	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 func Login(c *gin.Context) {
@@ -57,8 +62,8 @@ func Login(c *gin.Context) {
 		return
 	}
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("token", token, 3600*24, "/", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.SetCookie("token", token, 3600*24, "/home", "", false, true)
+	c.Redirect(http.StatusMovedPermanently, "/home")
 }
 
 func ShortenURL(c *gin.Context) {
@@ -94,4 +99,11 @@ func RedirectURL(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusMovedPermanently, url.Original)
+}
+
+func Logout(c *gin.Context) {
+	//supprimer le cookie
+	c.SetCookie("token", "", -1, "/", "", false, true)
+	c.SetCookie("token", "", -1, "/home", "", false, true)
+	c.Redirect(http.StatusMovedPermanently, "/")
 }

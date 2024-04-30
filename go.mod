@@ -7,11 +7,7 @@ require (
 	go.mongodb.org/mongo-driver v1.14.0
 )
 
-require (
-	github.com/gorilla/securecookie v1.1.2 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
-)
+
 
 require (
 	github.com/bytedance/sonic v1.11.3 // indirect
@@ -25,7 +21,6 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/gorilla/sessions v1.2.2
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
@@ -51,5 +46,4 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/gorm v1.25.10
 )

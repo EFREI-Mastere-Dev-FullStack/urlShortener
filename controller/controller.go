@@ -15,12 +15,19 @@ var BaseURL, _ = goenv.GetEnv("BASE_URL")
 func IndexPage(c *gin.Context) {
 	user, _ := c.Get("user")
 	username := user.(model.User).Username
+
+	urls, err := model.GetUrlsByUserId(user.(model.User).ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	if user != nil {
-		c.HTML(http.StatusOK, "index.html", gin.H{"username": username})
+		c.HTML(http.StatusOK, "index.html", gin.H{"username": username, "urls": urls})
 	} else {
 		c.HTML(http.StatusOK, "index.html", nil)
 	}
 }
+
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
@@ -63,15 +70,20 @@ func Login(c *gin.Context) {
 	}
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("token", token, 3600*24, "/home", "", false, true)
+	c.SetCookie("token", token, 3600*24, "/shorten", "", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/home")
 }
 
 func ShortenURL(c *gin.Context) {
+	user, _ := c.Get("user")
+
 	var url model.URL
 	if err := c.ShouldBind(&url); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	url.UserID = user.(model.User).ID
 
 	err := url.Save()
 	if err != nil {

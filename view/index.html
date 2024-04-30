@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Shorten URL</title>
   <style>
-    /* Style général */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -56,21 +55,21 @@
       background-color: #0056b3;
     }
 
-    /* Style spécifique pour l'élément d'expiration */
+
     #expirationDate {
       display: none;
     }
 
-    /* Username styling */
+   
     .username {
       font-weight: bold;
-      margin-bottom: 30px; /* Augmentation de l'espacement vers le bas */
+      margin-bottom: 30px; 
       color: #007bff;
-      font-size: 20px; /* Augmentation de la taille de la police */
-      text-align: center; /* Centre le texte */
+      font-size: 20px; 
+      text-align: center; 
     }
 
-    /* Logout button styling */
+   
     .logout-btn {
       background-color: #dc3545;
       border-color: #dc3545;
@@ -82,11 +81,40 @@
       background-color: #c8233c;
     }
 
-    /* Alignement horizontal des boutons */
     .button-container {
       display: flex;
       justify-content: space-between;
     }
+
+    .url-section {
+  max-width: 800px; 
+  margin: 0 auto; 
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; 
+}
+
+.url-item {
+  margin-bottom: 10px; 
+}
+
+.url-info {
+  display: block; 
+  font-size: 14px;
+  color: #333;
+}
+
+.url-link {
+  color: #007bff; 
+  text-decoration: none; 
+}
+
+.url-link:hover {
+  text-decoration: underline; 
+}
+
   </style>
 </head>
 <body>
@@ -113,6 +141,20 @@
       <button type="button" class="logout-btn" onclick="location.href='/logout'">Logout</button>
     </div>
   </form>
+  <div class="url-section">
+    <h2>Your URLs:</h2>
+    <ul class="url-list">
+        {{ range .urls }}
+            <li class="url-item">
+                <span class="url-info">
+                    URL: <a class="url-link" href="{{ .Original }}">{{ .URLShorten }}</a>,
+                    Expire: {{ if .ExpiredAt.IsZero }}Never{{ else }}{{ .ExpiredAt.Format "2006-01-02" }}{{ end }}
+                </span>
+            </li>
+        {{ end }}
+    </ul>
+</div>
+
   <script>
     let savedDate;
     document.getElementById('expireCheckbox').addEventListener('change', function () {

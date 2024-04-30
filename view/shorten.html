@@ -29,6 +29,22 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -46,5 +62,8 @@
     {{if not .url.ExpiredAt.IsZero}}
         <p>Expiration Date: {{.url.ExpiredAt}}</p>
     {{end}}
+
+    <!-- Bouton pour revenir à la page d'accueil -->
+    <a class="button" href="/home">Retour à la page d'accueil</a>
 </body>
 </html>

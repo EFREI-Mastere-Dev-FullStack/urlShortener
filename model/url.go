@@ -29,7 +29,13 @@ func (url *URL) Save() error {
 	var db = database.Connection
 
 	if url.Alias != "" {
-		filter := bson.M{"$or": []bson.M{{"shortened_slug": url.Alias}, {"alias": url.Alias}}}
+		filter := bson.M{
+			"$or": []bson.M{
+				{"shortened_slug": url.Alias},
+				{"alias": url.Alias},
+			},
+			"user_id": url.UserID,
+		}
 		err := db.Database.Collection("urls").FindOne(context.Background(), filter).Err()
 		if err == nil {
 			return fmt.Errorf("alias already in use")
